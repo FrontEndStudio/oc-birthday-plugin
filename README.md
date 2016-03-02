@@ -21,13 +21,13 @@ first_name, last_name, middle_name, birth_date, sort_order, status
 
 ### recordList
 
-noRecordsMessage (string) -  Message to display in the list in case there are no records. [No records found]
+- noRecordsMessage (string) -  Message to display in the list in case there are no records. [No records found]
 
 **Link to details page**
 - detailsPage (dropdown) - Page to display record details.
 - detailsUrlParameter (string) - [id]
 
-** Pagination **
+**Pagination**
 - recordsPerPage (number): Number of records to display on a single page. Leave empty to disable pagination.
 - pageNumber (string) - This value is used to determine what page the user is on [:id]
 
@@ -45,6 +45,8 @@ noRecordsMessage (string) -  Message to display in the list in case there are no
 
 To use the component, drop it on a page, fill in the plugin properties and use the `{% component 'recordList' %}` and `{% component 'recordDetails' %}` tag anywhere in the page code to render it. The next example shows a simplest page code that uses the birthday component:
 
+**recordList**
+
 ```
 title = "Birthday List"
 url = "/birthday/:id?1"
@@ -61,6 +63,8 @@ sortColumn = "last_name"
 ==
 {% component 'recordList' %}
 ```
+
+**recordDetails**
 
 ```
 title = "Birthday Detail"

@@ -1,4 +1,4 @@
-# October CMS Birtday plugin
+# October CMS Birthday plugin
 
 ## About
 

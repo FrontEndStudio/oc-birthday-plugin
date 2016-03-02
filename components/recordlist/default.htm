@@ -1,0 +1,53 @@
+{% set records = __SELF__.records %}
+{#% set displayColumn = __SELF__.displayColumn %#}
+{% set noRecordsMessage = __SELF__.noRecordsMessage %}
+{% set detailsPage = __SELF__.detailsPage %}
+{% set detailsKeyColumn = __SELF__.detailsKeyColumn %}
+{% set detailsUrlParameter = __SELF__.detailsUrlParameter %}
+
+<div class="record-list">
+    {% for record in records %}
+        <div class="record">
+            {# Use spaceless tag to remove spaces inside the A tag. #}
+            {% spaceless %}
+                {% if detailsPage %}
+                    <a href="{{ detailsPage|page({ (detailsUrlParameter): attribute(record, detailsKeyColumn) }) }}">
+                {% endif %}
+
+                <pre>
+                    {#{ attribute(record, 'id') }#}
+                    id: {{ record.id }}
+                    first_name: {{ record.first_name }}
+                    middle_name: {{ record.middle_name }}
+                    last_name: {{ record.last_name }}
+                    birth_date: {{ record.birth_date }}
+                    status: {{ record.status }}
+                </pre>
+
+                {% if detailsPage %}
+                    </a>
+                {% endif %}
+            {% endspaceless %}
+        </div>
+    {% else %}
+        <div class="no-data">{{ noRecordsMessage }}</div>
+    {% endfor %}
+</div>
+
+{% if records.lastPage > 1 %}
+    <ul class="pagination">
+        {% if records.currentPage > 1 %}
+            <li><a href="{{ this.page.baseFileName|page({ (pageParam): (records.currentPage-1) }) }}">&larr; Prev</a></li>
+        {% endif %}
+
+        {% for page in 1..records.lastPage %}
+            <li class="{{ records.currentPage == page ? 'active' : null }}">
+                <a href="{{ this.page.baseFileName|page({ (pageParam): page }) }}">{{ page }}</a>
+            </li>
+        {% endfor %}
+
+        {% if records.lastPage > records.currentPage %}
+            <li><a href="{{ this.page.baseFileName|page({ (pageParam): (records.currentPage+1) }) }}">Next &rarr;</a></li>
+        {% endif %}
+    </ul>
+{% endif %}

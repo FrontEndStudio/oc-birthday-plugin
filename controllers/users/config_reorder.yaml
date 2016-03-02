@@ -1,0 +1,16 @@
+title: Reorder User
+
+# string Model attribute to use for the display name
+nameFrom: first_name
+
+#showTree: false
+#sortMode: nested
+
+# string Reordering mode:
+# sortMode: simple|nested (showTree: true)
+# simple: October\Rain\Database\Traits\Sortable
+# nested: October\Rain\Database\Traits\NestedTree
+
+modelClass: Fes\Birthday\Models\User
+toolbar:
+    buttons: reorder_toolbar

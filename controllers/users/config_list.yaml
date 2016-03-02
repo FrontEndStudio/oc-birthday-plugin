@@ -1,0 +1,16 @@
+title: User
+modelClass: Fes\Birthday\Models\User
+list: $/fes/birthday/models/user/columns.yaml
+recordUrl: 'fes/birthday/users/update/:id'
+noRecordsMessage: 'backend::lang.list.no_records'
+showSetup: true
+showCheckboxes: true
+showTree: false
+showSorting: 1
+defaultSort:
+    column: id
+    direction: asc
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'

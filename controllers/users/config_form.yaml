@@ -1,0 +1,14 @@
+name: User
+modelClass: Fes\Birthday\Models\User
+form: $/fes/birthday/models/user/fields.yaml
+defaultRedirect: fes/birthday/users
+create:
+    title: Create
+    redirect: 'fes/birthday/users/update/:id'
+    redirectClose: fes/birthday/users
+update:
+    title: Update
+    redirect: fes/birthday/users
+    redirectClose: fes/birthday/users
+preview:
+    title: Preview

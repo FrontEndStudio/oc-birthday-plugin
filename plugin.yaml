@@ -1,0 +1,18 @@
+plugin:
+    name: 'fes.birthday::lang.plugin.name'
+    description: 'fes.birthday::lang.plugin.description'
+    author: FrontEndStudio
+    icon: oc-icon-calendar
+    homepage: 'http://www.frontendstudio.com'
+permissions:
+    fes.birthday.access_user:
+        tab: User
+        label: User
+    fes.birthday.access_import_export:
+        tab: 'Import, Export'
+        label: 'Import, Export'
+navigation:
+    main-menu-item:
+        label: 'fes.birthday::lang.plugin.name'
+        url: fes/birthday/users
+        icon: icon-calendar

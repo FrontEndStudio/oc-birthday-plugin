@@ -1,0 +1,15 @@
+import:
+    title: Import users
+    list: $/fes/birthday/models/userimport/columns.yaml
+    form: $/fes/birthday/models/userimport/fields.yaml
+    modelClass: Fes\Birthday\Models\UserImport
+    redirect: fes/birthday/users
+    permissions: fes.birthday.access_import_export
+
+export:
+    title: Export users
+    fileName: users.csv
+    list: $/fes/birthday/models/userexport/columns.yaml
+    modelClass: Fes\Birthday\Models\UserExport
+    redirect: fes/birthday/users
+    permissions: fes.birthday.access_import_export

@@ -1,0 +1,7 @@
+columns:
+    id: ID
+    first_name: fes.birthday::lang.user.first_name
+    middle_name: fes.birthday::lang.user.middle_name
+    last_name: fes.birthday::lang.user.last_name
+    birth_date: fes.birthday::lang.user.birth_date
+    status: fes.birthday::lang.user.status

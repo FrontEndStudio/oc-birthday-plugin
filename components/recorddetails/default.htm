@@ -1,0 +1,18 @@
+{% set record = __SELF__.record %}
+{#% set displayColumn = __SELF__.displayColumn %#}
+{% set notFoundMessage = __SELF__.notFoundMessage %}
+
+{#{ dump(record.attributes) }#}
+
+{% if record %}
+    <pre>
+      id: {{ record.id }}
+      first_name: {{ record.first_name }}
+      middle_name: {{ record.middle_name }}
+      last_name: {{ record.last_name }}
+      status: {{ record.status }}
+      birth_date: {{ record.birth_date }}
+    </pre>
+{% else %}
+    {{ notFoundMessage }}
+{% endif %}

@@ -1,0 +1,22 @@
+fields:
+    first_name:
+        label: fes.birthday::lang.user.first_name
+        span: auto
+        type: text
+    middle_name:
+        label: fes.birthday::lang.user.middle_name
+        span: auto
+        type: text
+    last_name:
+        label: fes.birthday::lang.user.last_name
+        span: auto
+        type: text
+    birth_date:
+        label: fes.birthday::lang.user.birth_date
+        mode: datetime
+        span: auto
+        type: datepicker
+    status:
+        label: fes.birthday::lang.user.status
+        span: auto
+        type: switch

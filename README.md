@@ -23,23 +23,23 @@ first_name, last_name, middle_name, birth_date, sort_order, status
 
 noRecordsMessage (string) -  Message to display in the list in case there are no records. [No records found]
 
-** Link to details page **
-detailsPage (dropdown) - Page to display record details.
-detailsUrlParameter (string) - [id]
+**Link to details page**
+- detailsPage (dropdown) - Page to display record details.
+- detailsUrlParameter (string) - [id]
 
 ** Pagination **
-recordsPerPage (number): Number of records to display on a single page. Leave empty to disable pagination.
-pageNumber (string) - This value is used to determine what page the user is on [:id]
+- recordsPerPage (number): Number of records to display on a single page. Leave empty to disable pagination.
+- pageNumber (string) - This value is used to determine what page the user is on [:id]
 
-** Sorting **
-sortColumn (autocomplete): Model column the records should be ordered by
-sortDirection (drodown): [asc|desc]
+**Sorting**
+- sortColumn (autocomplete): Model column the records should be ordered by
+- sortDirection (drodown): [asc|desc]
 
 ### recordDetails
 
-identifierValue (string) - Identifier value to load the record from the database. Specify a fixed value or URL parameter name. [:id]
-modelKeyColumn (autocomplete) - Model column to use as a record identifier for fetching the record from the database. [id]
-notFoundMessage (string) - Message to display if the record is not found. Used in the default component\'s partial. [Record not found]
+- identifierValue (string) - Identifier value to load the record from the database. Specify a fixed value or URL parameter name. [:id]
+- modelKeyColumn (autocomplete) - Model column to use as a record identifier for fetching the record from the database. [id]
+- notFoundMessage (string) - Message to display if the record is not found. Used in the default component\'s partial. [Record not found]
 
 ## How to use this component in October CMS
 

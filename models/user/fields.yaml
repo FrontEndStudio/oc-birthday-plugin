@@ -13,7 +13,7 @@ fields:
         type: text
     birth_date:
         label: fes.birthday::lang.user.birth_date
-        mode: datetime
+        mode: date
         span: auto
         type: datepicker
     status:

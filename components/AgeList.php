@@ -5,62 +5,28 @@ use Cms\Classes\ComponentBase;
 use Lang;
 use Exception;
 use SystemException;
+use Db;
 
-class RecordList extends ComponentBase
+class AgeList extends ComponentBase
 {
-    /**
-    * A collection of records to display
-    * @var Collection
-    */
+
     public $records;
-
-    /**
-    * Message to display when there are no records.
-    * @var string
-    */
     public $noRecordsMessage;
-
-    /**
-    * Reference to the page name for linking to details.
-    * @var string
-    */
     public $detailsPage;
-
-    /**
-    * Specifies the current page number.
-    * @var integer
-    */
     public $pageNumber;
-
-    /**
-    * Parameter to use for the page number
-    * @var string
-    */
+    public $daysPast;
+    public $daysFuture;
+    public $sortColumn;
+    public $sortDirection;
     public $pageParam;
-
-    /**
-    * Model column name to display in the list.
-    * @var string
-    */
-    //public $displayColumn;
-
-    /**
-    * Model column to use as a record identifier in the details page links
-    * @var string
-    */
     public $detailsKeyColumn;
-
-    /**
-    * Name of the details page URL parameter which takes the record identifier.
-    * @var string
-    */
     public $detailsUrlParameter;
 
     public function componentDetails()
     {
         return [
-            'name'        => 'fes.birthday::lang.components.list_title',
-            'description' => 'fes.birthday::lang.components.list_description'
+            'name'        => 'fes.birthday::lang.components.age_title',
+            'description' => 'fes.birthday::lang.components.age_description'
         ];
     }
 
@@ -107,6 +73,22 @@ class RecordList extends ComponentBase
                 'type'        => 'string',
                 'default'     => '{{ :id }}',
                 'group'       => 'fes.birthday::lang.components.list_pagination'
+            ],
+            'daysPast' => [
+                'title'             => 'fes.birthday::lang.components.agelist_records_days_past',
+                'description'       => 'fes.birthday::lang.components.agelist_records_days_past_description',
+                'type'              => 'string',
+                'validationPattern' => '^[0-9]*$',
+                'validationMessage' => 'fes.birthday::lang.components.agelist_records_days_past_validation',
+                'group'             => 'fes.birthday::lang.components.agelist_days'
+            ],
+            'daysFuture' => [
+                'title'             => 'fes.birthday::lang.components.agelist_records_days_future',
+                'description'       => 'fes.birthday::lang.components.agelist_records_days_future_description',
+                'type'              => 'string',
+                'validationPattern' => '^[0-9]*$',
+                'validationMessage' => 'fes.birthday::lang.components.agelist_records_days_future_validation',
+                'group'             => 'fes.birthday::lang.components.agelist_days'
             ],
             'sortColumn' => [
                 'title'       => 'fes.birthday::lang.components.list_sort_column',
@@ -165,9 +147,13 @@ class RecordList extends ComponentBase
     protected function prepareVars()
     {
         $this->noRecordsMessage = $this->page['noRecordsMessage'] = Lang::get($this->property('noRecordsMessage'));
+        $this->daysPast = $this->page['daysPast'];
+        $this->daysFuture = $this->page['daysFuture'];
+
         $this->pageParam = $this->page['pageParam'] = $this->paramName('pageNumber');
         $this->detailsKeyColumn = 'id';
         $this->detailsUrlParameter = $this->page['detailsUrlParameter'] = $this->property('detailsUrlParameter');
+
 
         $detailsPage = $this->property('detailsPage');
 
@@ -194,41 +180,23 @@ class RecordList extends ComponentBase
 
     protected function listRecords()
     {
-        $modelClassName = 'Fes\Birthday\Models\User';
-        $model = new $modelClassName();
-        $model = $this->sort($model);
-        $records = $this->paginate($model);
-        return $records;
-    }
 
-    protected function paginate($model)
-    {
-        $recordsPerPage = trim($this->property('recordsPerPage'));
+        $daysPast = trim($this->property('daysPast'));
 
-        if (!strlen($recordsPerPage)) {
-            return $model->get();
+        if (!strlen($daysPast) || !preg_match('/^[0-9]+$/', $daysPast)) {
+            $daysPast = 1;
         }
 
-        if (!preg_match('/^[0-9]+$/', $recordsPerPage)) {
-            throw new SystemException('Invalid records per page value.');
+        $daysFuture = trim($this->property('daysFuture'));
+
+        if (!strlen($daysFuture) || !preg_match('/^[0-9]+$/', $daysFuture)) {
+            $daysFuture = 1;
         }
-
-        $pageNumber = trim($this->property('pageNumber'));
-
-        if (!strlen($pageNumber) || !preg_match('/^[0-9]+$/', $pageNumber)) {
-            $pageNumber = 1;
-        }
-
-        return $model->paginate($recordsPerPage, $pageNumber);
-    }
-
-    protected function sort($model)
-    {
 
         $sortColumn = trim($this->property('sortColumn'));
 
         if (!strlen($sortColumn)) {
-            return;
+            $sortColumn = 'upcoming_days';
         }
 
         $sortDirection = trim($this->property('sortDirection'));
@@ -237,6 +205,24 @@ class RecordList extends ComponentBase
             $sortDirection = 'asc';
         }
 
-        return $model->orderBy($sortColumn, $sortDirection);
+        $records = Db::table('fes_birthday_user')
+            ->select(Db::raw("*,
+                CONCAT_WS(' ', NULLIF(first_name, ''), NULLIF(middle_name, ''), NULLIF(last_name, '')) AS full_name,
+                DATE_FORMAT(birth_date, '%d') AS date_dd,
+                DATE_FORMAT(birth_date, '%m') AS date_mm,
+                DATE_FORMAT(birth_date, '%Y') AS date_yyyy,
+                DATE_FORMAT(birth_date, '%M') AS date_month_name,
+                DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(birth_date, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(birth_date, '00-%m-%d')) AS age,
+                FLOOR((UNIX_TIMESTAMP(CONCAT(((SUBSTR(birth_date,-14, 5)  < RIGHT(CURRENT_DATE, 5)) + YEAR(CURRENT_DATE)), SUBSTRING(birth_date, -15,6))) - UNIX_TIMESTAMP(CURRENT_DATE)) / 86400) AS upcoming_days"))
+            ->whereRaw("MAKEDATE( YEAR(CURDATE()), DAYOFYEAR(birth_date) )
+                BETWEEN DATE_ADD( CURDATE(), INTERVAL -".$daysPast."  DAY ) AND DATE_ADD( CURDATE(), INTERVAL ".$daysFuture."  DAY )
+                OR MAKEDATE( YEAR(CURDATE())+1, DAYOFYEAR(birth_date) )
+                BETWEEN DATE_ADD( CURDATE(), INTERVAL -".$daysPast."  DAY ) AND DATE_ADD( CURDATE(), INTERVAL ".$daysFuture."  DAY )")
+            ->orderBy($sortColumn, $sortDirection)
+            ->get();
+
+        return $records;
+
     }
+
 }

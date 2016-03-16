@@ -1,53 +1,29 @@
 {% set records = __SELF__.records %}
-{#% set displayColumn = __SELF__.displayColumn %#}
-{% set noRecordsMessage = __SELF__.noRecordsMessage %}
-{% set detailsPage = __SELF__.detailsPage %}
-{% set detailsKeyColumn = __SELF__.detailsKeyColumn %}
-{% set detailsUrlParameter = __SELF__.detailsUrlParameter %}
+{# set noRecordsMessage = __SELF__.noRecordsMessage #}
+{% set dd_mm_now %}{{ "now"|date("d-m") }}{% endset %}
 
-<div class="record-list">
-    {% for record in records %}
-        <div class="record">
-            {# Use spaceless tag to remove spaces inside the A tag. #}
-            {% spaceless %}
-                {% if detailsPage %}
-                    <a href="{{ detailsPage|page({ (detailsUrlParameter): attribute(record, detailsKeyColumn) }) }}">
-                {% endif %}
-
-                <pre>
-                    {#{ attribute(record, 'id') }#}
-                    id: {{ record.id }}
-                    first_name: {{ record.first_name }}
-                    middle_name: {{ record.middle_name }}
-                    last_name: {{ record.last_name }}
-                    birth_date: {{ record.birth_date }}
-                    status: {{ record.status }}
-                </pre>
-
-                {% if detailsPage %}
-                    </a>
-                {% endif %}
-            {% endspaceless %}
-        </div>
+{% for record in records %}
+    {% set dd_mm_person %}{{ record.date_dd }}-{{ record.date_mm }}{% endset %}
+    <div class="calendar--item" itemscope>
+        <time itemprop="birthday" datetime = "{{ record.date_yyyy }}-{{ record.date_mm }}-{{ record.date_dd }}" class="calendar--date">
+            <span class="calendar--month">{{ record.date_month_name | truncate(3, false, "") | uppercase }}</span>
+            <span class="calendar--day">{{ record.date_dd }}</span>
+        </time>
+    <div class="calendar--content_container">
+        <span class="calendar--content" itemprop="name">{{ record.full_name }}</span>
+        <span class="calendar--content">
+    {% if dd_mm_person == dd_mm_now %}
+        is vandaag {{ record.age }} jaar!<br>
+    {% elseif record.upcoming_days >= 20 %}
+        is {{ record.age }} jaar geworden<br />
     {% else %}
-        <div class="no-data">{{ noRecordsMessage }}</div>
-    {% endfor %}
-</div>
-
-{% if records.lastPage > 1 %}
-    <ul class="pagination">
-        {% if records.currentPage > 1 %}
-            <li><a href="{{ this.page.baseFileName|page({ (pageParam): (records.currentPage-1) }) }}">&larr; Prev</a></li>
-        {% endif %}
-
-        {% for page in 1..records.lastPage %}
-            <li class="{{ records.currentPage == page ? 'active' : null }}">
-                <a href="{{ this.page.baseFileName|page({ (pageParam): page }) }}">{{ page }}</a>
-            </li>
-        {% endfor %}
-
-        {% if records.lastPage > records.currentPage %}
-            <li><a href="{{ this.page.baseFileName|page({ (pageParam): (records.currentPage+1) }) }}">Next &rarr;</a></li>
-        {% endif %}
-    </ul>
-{% endif %}
+        wordt {{ record.age + 1 }} jaar<br>
+    {% endif %}
+        </span>
+        </div>
+    </div>
+{% else %}
+    <div class="calendar--item" itemscope>
+        <div class="calendar--item" style="padding: 4px;">De komende tijd zijn er geen verjaardagen!</div>
+    </div>
+{% endfor %}

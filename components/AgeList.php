@@ -217,7 +217,7 @@ class AgeList extends ComponentBase
             ->whereRaw("MAKEDATE( YEAR(CURDATE()), DAYOFYEAR(birth_date) )
                 BETWEEN DATE_ADD( CURDATE(), INTERVAL -".$daysPast."  DAY ) AND DATE_ADD( CURDATE(), INTERVAL ".$daysFuture."  DAY )
                 OR MAKEDATE( YEAR(CURDATE())+1, DAYOFYEAR(birth_date) )
-                BETWEEN DATE_ADD( CURDATE(), INTERVAL -".$daysPast."  DAY ) AND DATE_ADD( CURDATE(), INTERVAL ".$daysFuture."  DAY )")
+                BETWEEN DATE_ADD( CURDATE(), INTERVAL -".$daysPast."  DAY ) AND DATE_ADD( CURDATE(), INTERVAL ".$daysFuture."  DAY ) AND status=1")
             ->orderBy($sortColumn, $sortDirection)
             ->get();
 
